@@ -1,42 +1,67 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
-void init_map(char *map[], int num)
+int num;
+char **map;
+
+void init_map(void)
 {
     for (int i = 0; i < num; i++)
     {
-        for(int j = 0; j < num; j++)
+        for (int j = 0; j < num; j++)
             map[i][j] = ' ';
     }
 }
 
-void draw_star(char *map[], int num, char *star)
+void draw_star(int i, int j, int num)
 {
-    int len = strlen(star);
-    for (int i = 0; i < num; i += len)
+    if (num == 1)
     {
-        for (int j = 0; j < num; j += len)
-        {
-            if (((i + 1) % 3 == 0) || ((j + 1) % 3 == 0))
-                map[i][j] = star;
-        }
+        map[i][j] = '*';
+        return;
     }
 
+    int m = num / 3;
+    int cnt = 0;
+    for (int a = 0; a < 3; a++)
+    {
+        for (int b = 0; b < 3; b++)
+        {
+            cnt++;
+            if (cnt != 5)
+                draw_star(i + a*m, j + b*m, m);
+        }
+    }
 }
 
-void print_map(char *map[], int num)
+void print_map()
 {
     for (int i = 0; i < num; i++)
-        printf("%s\n", map[i]);
+    {
+        for (int j = 0; j < num; j++)
+            printf("%c", map[i][j]);
+        printf("\n");
+    }
 }
 
 int main(void)
 {
-    int num;
-    char **map;
-
     scanf("%d", &num);
-    init_map(map, num);
-    draw_star(map, num, "*");
-    print_map(map, num);
+    
+    // map 할당
+    map = (char **)malloc(sizeof(char *) * num);
+    for (int i = 0; i < num; i++)
+    {
+        if (!(map[i] = (char *)malloc(sizeof(char) * num)))
+            return 0;
+    }
+
+    // map을 빈문자로 초기화 해준다
+    init_map();
+
+    // 필요한 부분을 '*'로 채워준다
+    draw_star(0, 0, num);
+
+    print_map(num);
 }
