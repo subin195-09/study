@@ -2,7 +2,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-long long gcd(int a, b)
+long long gcd(int a, int b)
 {
     int temp;
     if (a > b)
