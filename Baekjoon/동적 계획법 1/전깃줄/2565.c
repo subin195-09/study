@@ -1,68 +1,62 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int num[101][2];
+struct num{
+    int a;
+    int b;
+};
 
 int max(int a, int b) {return a > b ? a : b;}
 
-int lis(int n, int pivot)
+int static compare(const void *first, const void *second)
+{
+    struct num *one = (struct num*)first;
+    struct num *two = (struct num*)second;
+
+    if(one->a < two->a)
+        return -1;
+    else if(one->a > two ->a)
+        return 1;
+    else
+        return 0;
+}
+
+int electric(struct num *elect, int n)
 {
     int result = 1;
-    int sub[n + 1];
-    for(int i = 1; i <= n; i++)
+    int sub[n];
+
+    for(int i = 0; i < n; i++)
     {
         sub[i] = 1;
-        for(int j = 1; j <= i; j++)
+        for(int j = 0; j < i; j++)
         {
-            if(num[j][pivot] < num[i][pivot])
+            if(elect[j].b < elect[i].b)
             {
                 sub[i] = max(sub[i], sub[j] + 1);
                 result = max(result, sub[i]);
             }
         }
     }
-    return result;
-}
-
-int static compare(const void *first, const void *second)
-{
-    int num1 = *(int *)first;
-    int num2 = *(int *)second;
-
-    if (num1 > num2)
-        return 1;
-    if (num1 < num2)
-        return -1;
-    else
-        return 0;
+    return n - result;
 }
 
 // 1) A전봇대를 오름차순 정렬
 // 2) B전봇대의 LIS를 구한다
-int electric(int n)
-{
-    int result;
-
-    // A전봇대순으로 정렬
-    qsort(num, n + 1, sizeof(int *), compare);
-
-    for(int i = 1; i <= n; i++)
-        printf("%d %d\n", num[0][i], num[1][i]);
-    printf("\n");
-    // B전봇대대 lis
-    result = lis(n, 1);
-    printf("%d", result);
-
-    return n - result;
-}
-
+// 3) 전체의 전봇대 수 - (2)를 해준다
 int main(void)
 {
     int n;
     scanf("%d", &n);
 
-    for(int i = 1; i <= n; i++)
-        scanf("%d %d", &num[i][0], &num[i][1]);
+    struct num elect[n];
 
-    printf("%d\n", electric(n));
+    for(int i = 0; i < n; i++)
+        scanf("%d %d", &elect[i].a, &elect[i].b);
+    
+    // A전봇대 순으로 정렬
+    qsort(elect, n, sizeof(struct num), compare);
+
+    // B전봇대 기준으로 lis를 구해준다
+    printf("%d\n", electric(elect, n));
 }
