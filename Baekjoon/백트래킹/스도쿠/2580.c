@@ -64,12 +64,15 @@ void back(int count)
 
     for(int i = 1; i <= 9; i++)
     {
+        // 현재 위치에 숫자i가 유효한가 검사
         if(check(count, i))
         {
             int row = an[count].row;
             int col = an[count].col;
             map[row][col] = i;
             back(count + 1);
+            // 다시 되돌아 온 경우(백트랙) 0으로 초기화 후
+            // i + 1부터 다시 검사한다
             map[row][col] = 0;
         }
     }
